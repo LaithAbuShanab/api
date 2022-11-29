@@ -9,7 +9,7 @@ class Router
 {
     //Request Types
     //Get Request
-    protected static $get_route = array(); //items/single'=>'items.single'
+    protected static $get_route = array();
     //POST Request
     protected static $post_route = array();
     //PUT Request
@@ -20,16 +20,12 @@ class Router
 
     public static function redirect(): void
     {
-        $request = $_SERVER['REQUEST_URI']; // the of any route      /items
+        $request = $_SERVER['REQUEST_URI'];
         $routes = array();
 
-        switch ($_SERVER['REQUEST_METHOD']) { //GET POST DELETE PUT
+        switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                $routes = self::$get_route; // $routes [0]items/single'=>'items.single
-                // $routes[$request]=items.single
-                //class_arr
-                // Items[0]
-                // single[1]
+                $routes = self::$get_route;
                 break;
             case 'POST':
                 $routes = self::$post_route;
@@ -51,19 +47,20 @@ class Router
         $class_arr = explode('.', $routes[$request]);
         $class_name = ucfirst($class_arr[0]);
         $class = $controller_namespace . $class_name;
-        // ==>Core\controller\Items
 
-        $instance = new $class; // all path
+        $instance = new $class;
 
         if (count($class_arr) > 1) {
             call_user_func([$instance, $class_arr[1]]);
         }
+
+        $instance->render();
     }
 
-    public static function get($route, $controller): void //Router::get('/items/single', 'items.single');
+    public static function get($route, $controller): void
     {
         self::$get_route[$route] = $controller;
-    }                   //items/single  //items.single
+    }
 
     public static function post($route, $controller): void
     {
